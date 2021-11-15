@@ -2,117 +2,40 @@ import React from 'react';
 import './ComposeEmailTemplate.scss';
 import {useDispatch, useSelector} from "react-redux";
 import {
-  changeDate,
-  changeLocation,
-  changeName,
-  changeRecipients,
-  changeSignature,
   changeStep,
-  changeSubject,
-  selectDate,
-  selectLocation,
-  selectName,
-  selectRecipients,
-  selectSignature,
-  selectSubject
-} from "./emailTemlaterSlice";
+  selectPlaceholdersValue,
+  selectPlaceholders,
+  changePlaceholderValue
+} from './emailTemlaterSlice';
 
 export const SetValues = () => {
-  const recipients = useSelector(selectRecipients);
-  const subject = useSelector(selectSubject);
-  const date = useSelector(selectDate);
-  const location = useSelector(selectLocation);
-  const name = useSelector(selectName);
-  const signature = useSelector(selectSignature);
+  const placeholders = useSelector(selectPlaceholders);
+  let placeholdersValue = [...useSelector(selectPlaceholdersValue)];
   const dispatch = useDispatch();
 
   return (
     <form className="main__form form">
       <div className="form__title">Set Values</div>
-      <label className="form__label">
+      {placeholders.map((placeholder, i) => (
+        <label
+          key={i}
+          className="form__label"
+        >
         <span className="form__text">
-          {"{recipients}"}
+          {placeholder}
         </span>
-        <input
-          className="form__input"
-          type="email"
-          placeholder="{recipient}"
-          value={recipients}
-          onChange={event => {
-            dispatch(changeRecipients(event.target.value));
-          }}
-        />
-      </label>
-      <label className="form__label">
-        <span className="form__text">
-          {"{subject}"}
-        </span>
-        <input
-          className="form__input"
-          type="text"
-          placeholder="{subject}"
-          value={subject}
-          onChange={event => {
-            dispatch(changeSubject(event.target.value));
-          }}
-        />
-      </label>
-      <label className="form__label">
-        <span className="form__text">
-          {"{date}"}
-        </span>
-        <input
-          className="form__input"
-          type="date"
-          placeholder="{date}"
-          value={date}
-          onChange={event => {
-            dispatch(changeDate(event.target.value));
-          }}
-        />
-      </label>
-      <label className="form__label">
-        <span className="form__text">
-          {"{location}"}
-        </span>
-        <input
-          className="form__input"
-          type="text"
-          placeholder="{location}"
-          value={location}
-          onChange={event => {
-            dispatch(changeLocation(event.target.value));
-          }}
-        />
-      </label>
-      <label className="form__label">
-        <span className="form__text">
-          {"{name}"}
-        </span>
-        <input
-          className="form__input"
-          type="text"
-          placeholder="{name}"
-          value={name}
-          onChange={event => {
-            dispatch(changeName(event.target.value));
-          }}
-        />
-      </label>
-      <label className="form__label">
-        <span className="form__text">
-          {"{signature}"}
-        </span>
-        <input
-          className="form__input"
-          type="text"
-          placeholder="{signature}"
-          value={signature}
-          onChange={event => {
-            dispatch(changeSignature(event.target.value));
-          }}
-        />
-      </label>
+          <input
+            className="form__input"
+            type="email"
+            placeholder={placeholder}
+            value={placeholdersValue[i]}
+            onChange={event => {
+              placeholdersValue[i] = event.target.value;
+              dispatch(changePlaceholderValue(placeholdersValue));
+            }}
+          />
+        </label>
+      ))}
       <div className="form__buttonsBlock">
         <button
           className="form__previousButton button"

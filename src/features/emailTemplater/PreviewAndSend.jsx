@@ -1,35 +1,23 @@
 import React from 'react';
 import './ComposeEmailTemplate.scss';
 import { useDispatch, useSelector } from "react-redux";
-import { sendNewEmail } from "./emailTemlaterSlice";
+import { selectPlaceholders, selectPlaceholdersValue, sendNewEmail } from './emailTemlaterSlice';
 import {
-  changeBody,
-  changeRecipients,
   changeStep,
-  changeSubject,
   selectBody,
-  selectDate,
-  selectLocation,
-  selectName,
   selectRecipients,
-  selectSignature,
   selectSubject
 } from "./emailTemlaterSlice";
 
 export const PreviewAndSend = () => {
   const recipients = useSelector(selectRecipients);
   const subject = useSelector(selectSubject);
-  const date = useSelector(selectDate);
-  const location = useSelector(selectLocation);
-  const name = useSelector(selectName);
-  const signature = useSelector(selectSignature);
   const dispatch = useDispatch();
-  const body = useSelector(selectBody)
-    .replace('{name}', name)
-    .replace('{subject}', subject)
-    .replace('{date}', date)
-    .replace('{location}', location)
-    .replace('{signature}', signature)
+  const placeholders = useSelector(selectPlaceholders);
+  const placeholdersValue = useSelector(selectPlaceholdersValue);
+  let body = useSelector(selectBody);
+
+  placeholders.forEach((placeholder, i) => body = body.replace(placeholder, placeholdersValue[i] || placeholder));
 
   return (
     <form className="main__form form">

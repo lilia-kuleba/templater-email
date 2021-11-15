@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './ComposeEmailTemplate.scss';
 import {useDispatch, useSelector} from "react-redux";
 import {
-  changeBody,
+  addPlaceholder,
+  changeBody, changePlaceholderValue,
   changeRecipients, changeStep,
   changeSubject,
   selectBody,
   selectRecipients,
-  selectStep,
   selectSubject
-} from "./emailTemlaterSlice";
+} from './emailTemlaterSlice';
 
 export const ComposeEmailTemplate = () => {
   const recipients = useSelector(selectRecipients);
@@ -17,6 +17,27 @@ export const ComposeEmailTemplate = () => {
   const body = useSelector(selectBody);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    filterPlaceholders();
+  }, [body])
+
+  const filterPlaceholders = () => {
+    const regex = /^[-_a-zA-Z0-9{}]+$/;
+    const placeholders = body
+      .replace(/(\r\n|\n|\r)/gm, " ")
+      .replace(/[.,\s]/g, ' ')
+      .split(' ')
+      .filter(placeholder => {
+        if ((placeholder[0] !== '{' || placeholder[placeholder.length - 1] !== '}')) return false;
+
+        return regex.test(placeholder);
+      })
+
+    const arr = new Array(placeholders.length);
+    dispatch(changePlaceholderValue(arr.fill('')));
+    dispatch(addPlaceholder(placeholders));
+  }
 
   return (
     <form className="main__form form">
@@ -57,7 +78,7 @@ export const ComposeEmailTemplate = () => {
           className="form__textarea"
           value={body}
           onChange={event => {
-            dispatch(changeBody(event.target.value))
+            dispatch(changeBody(event.target.value));
           }}
         />
       </label>
