@@ -1,56 +1,57 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import './App.scss';
+import classNames from "classnames";
+import {useSelector} from "react-redux";
+import {selectIsFail, selectIsSuccess, selectStep} from "./features/emailTemplater/emailTemlaterSlice";
+import {ComposeEmailTemplate} from "./features/emailTemplater/ComposeEmailTemplate";
+import {SetValues} from "./features/emailTemplater/SetValues";
+import {PreviewAndSend} from "./features/emailTemplater/PreviewAndSend";
+import {SuccessNotification} from "./features/emailTemplater/SuccessNotification";
+import {FailNotification} from "./features/emailTemplater/FailNotification";
 
 function App() {
+  const step = useSelector(selectStep);
+  const isSuccess = useSelector(selectIsSuccess);
+  const isFail = useSelector(selectIsFail);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
+      <header className="App__header header">
+        <div className="header__logo">ET</div>
+        <div className="header__title">Email Templater</div>
       </header>
+      <main className="App__main main">
+        <ul className="main__statusEmail statusEmail">
+          <li className={classNames(
+            "statusEmail__item",
+            "statusEmail__item--1",
+            {"statusEmail__item--active": step === 1}
+          )}>
+            1
+          </li>
+          <li className={classNames(
+            "statusEmail__item",
+            "statusEmail__item--2",
+            {"statusEmail__item--active": step === 2}
+          )}>
+            2
+          </li>
+          <li className={classNames(
+            "statusEmail__item",
+            "statusEmail__item--3",
+            {"statusEmail__item--active": step === 3}
+          )}>
+            3
+          </li>
+        </ul>
+        {step === 1 && <ComposeEmailTemplate/>}
+        {step === 2 && <SetValues/>}
+        {step === 3 && <PreviewAndSend/>}
+        <div className="main__status">
+          {isSuccess && <SuccessNotification/>}
+          {isFail && <FailNotification/>}
+        </div>
+      </main>
     </div>
   );
 }
